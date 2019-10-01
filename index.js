@@ -1,16 +1,26 @@
 var canvas = document.getElementById("game-area");
 var ctx = canvas.getContext("2d");
-let ship1 = new Ship(0, canvas.height / 2, 1, ctx);
-let ship2 = new Ship(canvas.width - SHIP_WIDTH, canvas.height / 2, -1, ctx);
+
+
+let ship1 = new Ship(0, canvas.height / 2, 1, ctx, "1");
+let ship2 = new Ship(canvas.width - SHIP_WIDTH, canvas.height / 2, -1, ctx, "2");
+
+var ship1Info = document.getElementById("ship1");
+var ship2Info = document.getElementById("ship2");
+
 
 document.addEventListener("keydown", keydownHandler, false);
 
 function keydownHandler(e) {
-    switch(e.key){
-        case "ArrowUp": ship1.moveUp(-10); break;
-        case "ArrowDown" : ship1.moveUp(10); break;
-        case " " : ship1.shoot() ; break;
-        default : break;
+    switch (e.key) {
+        case "ArrowUp": ship2.moveUp(-10); break;
+        case "ArrowDown": ship2.moveUp(10); break;
+        case " ": ship2.shoot(); break;
+
+        case "w": ship1.moveUp(-10); break;
+        case "s": ship1.moveUp(10); break;
+        case "Enter": ship1.shoot(); break;
+        default: break;
     }
 }
 
@@ -23,20 +33,15 @@ let init = () => {
 
 let gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'lightblue';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     ship1.draw();
     ship2.draw();
-    if (ship1.bullets && ship1.bullets.length > 0){
-        ship1.bullets.forEach((bullet, index, arr)=>{
-            if (bullet.collisionX(ship2.x) && bullet.collisionY(ship2)){
-                console.log("HIT SHIP 2");
-                arr.splice(index,1);
-                return;
-            }
-            if (bullet.collisionX(canvas.width)){
-                    arr.splice(index,1);
-            }
-        });
-    }
+    ship1.collisionDection(ship2, canvas.width, () => console.log("HIT SHIP 2"));
+    ship2.collisionDection(ship1, 0, () => console.log("HIT SHIP 1"));
+
+    ship1Info.innerHTML = ship1.getHealthStatus();
+    ship2Info.innerHTML = ship2.getHealthStatus();
 }
 
 init();

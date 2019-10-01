@@ -1,5 +1,11 @@
 #game-area{
     width: 500px;
     height: 500px;
-    border: 1px solid lightgray;
+    border: 5px solid lightgray;
+}
+
+#container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
